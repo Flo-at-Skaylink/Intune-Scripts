@@ -34,7 +34,7 @@ $registrySettings = @(
     # Kerberos token size
     @{ Path = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters"; Name = "MaxTokenSize"; DesiredValue = 48000; Type = "DWord" },
     # Taskbar alignment (0 = left)
-    @{ Path = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"; Name = "TaskbarAl"; DesiredValue = 0; Type = "DWord" },
+    @{ Path = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"; Name = "TaskbarAl"; DesiredValue = 0; Type = "DWord" },
     # Explorer Compact mode
     @{ Path = "HKLM:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"; Name = "UseCompactMode"; DesiredValue = 1; Type = "DWord" },
     # Classic context menu
