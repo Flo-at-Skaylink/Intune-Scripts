@@ -1,4 +1,3 @@
-
 <#
 .SYNOPSIS
     Applies custom Windows 11 device settings by updating specific registry keys.
