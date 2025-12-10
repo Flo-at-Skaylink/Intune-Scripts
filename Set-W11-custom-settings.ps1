@@ -20,12 +20,25 @@
 
 .NOTES
     Author: Florian Aschbichler
-    Date: 28.11.2025
-    Version: 1.0
+    Date: 10.12.2025
+    Version: 1.1
     Requires: Administrative privileges
 #>
 
-Write-Host "=== Applying Windows 11 Custom Settings ==="
+# Init & Logging
+$logFolder = "C:\ProgramData\Microsoft\IntuneManagementExtension\Logs"
+$logFile = Join-Path $logFolder "Set-W11-custom-settings.log"
+
+# Function to write logs
+Function Write-Log {
+    param ([string]$Message)
+    $TimeStamp = "[{0:MM/dd/yy} {0:HH:mm:ss}]" -f (Get-Date)
+    Add-Content -Path $logFile -Value "$TimeStamp - $Message"
+}
+
+
+Write-Output "=== Applying Windows 11 Custom Settings ==="
+Write-Log "=== Applying Windows 11 Custom Settings ==="
 
 # Define registry settings in an array
 $registrySettings = @(
@@ -50,24 +63,32 @@ foreach ($setting in $registrySettings) {
     try {
         # Create path if missing
         if (-not (Test-Path $setting.Path)) {
-            New-Item -Path $setting.Path -Force -ErrorAction SilentlyContinue | Out-Null
+            New-Item -Path $setting.Path -Force -ErrorAction SilentlyContinue
+            Write-Log "Created missing registry path: $($setting.Path)"
+            Write-Output "Created missing registry path: $($setting.Path)"
         }
 
         # Get current value
         $currentValue = (Get-ItemProperty -Path $setting.Path -ErrorAction SilentlyContinue).$($setting.Name)
+        Write-Log "Current value of $($setting.Path)\$($setting.Name) is '$currentValue'"
+        Write-Output "Current value of $($setting.Path)\$($setting.Name) is '$currentValue'"
 
         # Compare and update
         if ($currentValue -ne $setting.DesiredValue) {
             New-ItemProperty -Path $setting.Path -Name $setting.Name -Value $setting.DesiredValue -PropertyType $setting.Type -Force | Out-Null
-            Write-Host "Updated: $($setting.Path)\$($setting.Name) to $($setting.DesiredValue)"
+            Write-Log "Updated $($setting.Path)\$($setting.Name) to $($setting.DesiredValue)"
+            Write-Output "Updated: $($setting.Path)\$($setting.Name) to $($setting.DesiredValue)"
         }
         else {
-            Write-Host "No change: $($setting.Path)\$($setting.Name) is already $($setting.DesiredValue)"
+            Write-Log "No change needed for $($setting.Path)\$($setting.Name); already set to $($setting.DesiredValue)"
+            Write-Output "No change: $($setting.Path)\$($setting.Name) is already $($setting.DesiredValue)"
         }
     }
     catch {
         Write-Warning "Failed to process $($setting.Path)\$($setting.Name): $($_.Exception.Message)"
+        Write-Log "Error processing $($setting.Path)\$($setting.Name): $($_.Exception.Message)"
     }
 }
 
-Write-Host "=== Windows 11 Custom Settings Applied Successfully ==="
+Write-Output "=== Windows 11 Custom Settings Applied Successfully ==="
+Write-Log "=== Windows 11 Custom Settings Applied Successfully ==="
