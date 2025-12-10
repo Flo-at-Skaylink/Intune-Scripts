@@ -35,7 +35,6 @@ Function Write-Log {
     Add-Content -Path $logFile -Value "$TimeStamp - $Message"
 }
 
-
 Write-Output "=== Applying Windows 11 Custom Settings ==="
 Write-Log "=== Applying Windows 11 Custom Settings ==="
 
