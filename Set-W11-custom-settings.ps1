@@ -61,7 +61,7 @@ foreach ($setting in $registrySettings) {
     try {
         # Create path if missing
         if (-not (Test-Path $setting.Path)) {
-            New-Item -Path $setting.Path -Force -ErrorAction SilentlyContinue
+            New-Item -Path $setting.Path -Force -ErrorAction SilentlyContinue | Out-Null
             Write-Log "Created missing registry path: $($setting.Path)"
             Write-Output "Created missing registry path: $($setting.Path)"
         }
